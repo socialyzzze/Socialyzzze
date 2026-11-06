@@ -83,9 +83,9 @@ export function WorkCategoryPage({ category }: { category: Category }) {
                         Videos coming soon
                     </p>
                 ) : (
-                    <div className="mt-12 columns-1 gap-4 sm:columns-2 lg:columns-3">
+                    <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {category.videos.map((v, i) => (
-                            <div key={v.title + i} className="mb-4 break-inside-avoid">
+                            <div key={v.title + i}>
                                 <button
                                     onClick={() => setActive(v)}
                                     className={`group relative block w-full overflow-hidden rounded-xl border border-buttercream/10 bg-[#160E12] ${v.orientation === "vertical" ? "aspect-[9/16]" : "aspect-video"
