@@ -4,7 +4,9 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { Navigation } from "@/components/Navigation";
 import { HeroSection } from "@/components/HeroSection";
 import { NumbersSection } from "@/components/NumbersSection";
-import { WorksSection } from "@/components/WorksSection";
+import { WorksSection, VisualPhotoExhibition } from "@/components/WorksSection";
+import { WorkCategories } from "@/components/WorkCategories";
+import { WorkCategoryPage } from "@/components/WorkCategoryPage";
 import { ServicesSection } from "@/components/ServicesSection";
 import { AboutSection } from "@/components/AboutSection";
 import { ProcessSection } from "@/components/ProcessSection";
@@ -14,28 +16,54 @@ import { ContactSection } from "@/components/ContactSection";
 import { FooterSection } from "@/components/FooterSection";
 import { PrivacyPolicy } from "@/components/PrivacyPolicy";
 import { PrivacyBanner } from "@/components/PrivacyBanner";
+import { findCategory } from "@/data/videos";
 
 const PRIVACY_HASH = "#privacy-policy";
+const WORK_PREFIX = "#work/";
 
 const CLIP_CLOSED_BOTTOM = "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)";
 const CLIP_OPEN = "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)";
 const CLIP_CLOSED_TOP = "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)";
 
+// A route is "home", the privacy hash, or a valid "#work/<slug>" hash.
+const getRoute = (): string => {
+  const h = window.location.hash;
+  if (h === PRIVACY_HASH) return h;
+  if (h.startsWith(WORK_PREFIX) && findCategory(h.slice(WORK_PREFIX.length))) return h;
+  return "home";
+};
+
+const labelFor = (route: string): string => {
+  if (route === PRIVACY_HASH) return "Privacy Policy";
+  if (route.startsWith(WORK_PREFIX)) return findCategory(route.slice(WORK_PREFIX.length))?.name ?? "Work";
+  return "Socialyzzze";
+};
+
 export function App() {
-  const [showPrivacy, setShowPrivacy] = useState(window.location.hash === PRIVACY_HASH);
+  const [route, setRoute] = useState(getRoute());
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const labelRef = useRef<HTMLSpanElement | null>(null);
-  const targetRef = useRef(window.location.hash === PRIVACY_HASH);
+  const targetRef = useRef(getRoute());
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useEffect(() => {
-    const swapPage = (next: boolean) => {
-      setShowPrivacy(next);
+    const swapPage = (next: string) => {
+      setRoute(next);
       window.scrollTo(0, 0);
+      // coming back to the home page: jump to the section named in the hash
+      if (next === "home" && window.location.hash.length > 1) {
+        window.setTimeout(() => {
+          try {
+            document.querySelector(window.location.hash)?.scrollIntoView();
+          } catch {
+            /* not a valid selector, stay at top */
+          }
+        }, 80);
+      }
     };
 
     const onHashChange = () => {
-      const next = window.location.hash === PRIVACY_HASH;
+      const next = getRoute();
       if (next === targetRef.current) return;
       targetRef.current = next;
 
@@ -50,7 +78,7 @@ export function App() {
         return;
       }
 
-      label.textContent = next ? "Privacy Policy" : "Socialyzzze";
+      label.textContent = labelFor(next);
 
       const timeline = gsap.timeline();
       timeline
@@ -73,11 +101,15 @@ export function App() {
     };
   }, []);
 
+  const category = route.startsWith(WORK_PREFIX) ? findCategory(route.slice(WORK_PREFIX.length)) : undefined;
+
   return (
     <div className="min-h-screen bg-[#0E090B] text-buttercream antialiased selection:bg-blood-accent selection:text-buttercream">
       <CustomCursor />
-      {showPrivacy ? (
+      {route === PRIVACY_HASH ? (
         <PrivacyPolicy />
+      ) : category ? (
+        <WorkCategoryPage category={category} />
       ) : (
         <>
           <Navigation />
@@ -85,6 +117,8 @@ export function App() {
             <HeroSection />
             <NumbersSection />
             <WorksSection />
+            <WorkCategories />
+            <VisualPhotoExhibition />
             <ServicesSection />
             <AboutSection />
             <ProcessSection />

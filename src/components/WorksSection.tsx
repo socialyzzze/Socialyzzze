@@ -114,27 +114,31 @@ export function WorksSection() {
         </h2>
       </div>
 
-      <div className="w-full h-[460px] sm:h-[540px] md:h-[620px] relative mb-16 md:mb-28">
+      <div className="w-full h-[460px] sm:h-[540px] md:h-[620px] relative">
         <WorksWheel
           items={VIDEO_WORKS}
           label="WORKS"
           action="Inspect"
         />
       </div>
+    </section>
+  );
+}
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-16 pt-8 sm:pt-12 border-t border-buttercream/10">
-        <div className="mb-8 md:mb-12">
-          <span className="text-xs uppercase tracking-[0.3em] text-whispy-light font-bold block mb-2 sm:mb-3">
-            Selected Works
-          </span>
-          <h2 className="text-[clamp(1.5rem,6.2vw,3rem)] md:text-5xl font-black font-display text-buttercream uppercase tracking-tight">
-            VISUAL & PHOTO EXHIBITION
-          </h2>
-        </div>
+export function VisualPhotoExhibition() {
+  return (
+    <section id="photo-exhibition" className="relative py-20 sm:py-28 bg-[#0E090B] border-b border-buttercream/10 text-buttercream">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-16 mb-8 md:mb-12">
+        <span className="text-xs uppercase tracking-[0.3em] text-whispy-light font-bold block mb-2 sm:mb-3">
+          Selected Works
+        </span>
+        <h2 className="text-[clamp(1.5rem,6.2vw,3rem)] md:text-5xl font-black font-display text-buttercream uppercase tracking-tight">
+          VISUAL & PHOTO EXHIBITION
+        </h2>
+      </div>
 
-        <div className="w-full">
-          <LiquidGlassCarousel items={PHOTO_WORKS} panelHeight={420} entry={false} background="#160E12" />
-        </div>
+      <div className="w-full">
+        <LiquidGlassCarousel items={PHOTO_WORKS} panelHeight={420} entry={false} background="#160E12" />
       </div>
     </section>
   );
